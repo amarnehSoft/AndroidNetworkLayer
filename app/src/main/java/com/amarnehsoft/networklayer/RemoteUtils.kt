@@ -43,7 +43,7 @@ fun <T, R, E> Response<T>.toRemoteResponseAllowEmptyBody(
     return if (isSuccessful) {
         val body = body()
         if (body == null) {
-            RemoteResponse.createSuccess(null)
+            RemoteResponse.createSuccess<R?, E>(null)
         } else {
             bodyToRemote(body)
         }

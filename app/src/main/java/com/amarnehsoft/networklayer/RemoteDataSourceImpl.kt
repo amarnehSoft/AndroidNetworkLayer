@@ -20,7 +20,7 @@ class RemoteDataSourceImpl(
         return safeApiCall(
                 response = endPoint.getSupplierById(supplierId),
                 bodyToRemote = {
-                    RemoteResponse.createSuccess(it)
+                    RemoteResponse.createSuccess<Supplier, Exception>(it)
                 },
                 remoteError = {
                     it.asException()
@@ -32,15 +32,15 @@ class RemoteDataSourceImpl(
         return safeApiResponseCall(
                 response = endPoint.getCustomerById(customerId),
                 remoteError = {
-                    CustomerRemoteError.general(it.asException())
+                    CustomerRemoteError.General(it.asException())
                 },
                 brandError = { (messageId, message) ->
                     when (messageId) {
                         CUSTOMER_IS_NOT_FOUND_ID -> CustomerRemoteError.CustomerNotFound
                         CUSTOMER_IS_INVALID_ID -> CustomerRemoteError.CustomerIsInvalid
                         USER_IS_NOT_AUTHORIZED_TO_GET_THIS_CUSTOMER -> CustomerRemoteError.UserIsNotAuthorizedToGetThisCustomer
-                        else -> CustomerRemoteError.general(Exception("unknown messageId: $messageId, message=$message"))
-                    }
+                        else -> CustomerRemoteError.General(Exception("unknown messageId: $messageId, message=$message"))
+                    } as CustomerRemoteError
                 }
         )
     }
